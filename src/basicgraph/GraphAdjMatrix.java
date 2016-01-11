@@ -2,6 +2,7 @@ package basicgraph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -108,7 +109,18 @@ public class GraphAdjMatrix extends Graph {
 	 * @return List<Integer> a list of indices of vertices.  
 	 */	
 	public List<Integer> getDistance2(int v) {
-		return null;
+		int [][] result = new int[adjMatrix.length][adjMatrix.length];
+		List<Integer> mylist=new LinkedList<>();
+		for (int i = 0; i < adjMatrix.length; i++) { 
+		    for (int j = 0; j < adjMatrix.length; j++) { 
+		        for (int k = 0; k < adjMatrix.length; k++) { 
+		            result[i][j] += adjMatrix[i][k] * adjMatrix[k][j];
+		        }}}
+		for(int index=0;index<result.length;index++)
+			if(result[v][index]>0)
+				for(int r=0;r<result[v][index];r++)
+					mylist.add(index);
+		return mylist;
 	}
 	
 	/**

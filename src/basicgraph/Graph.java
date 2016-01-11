@@ -3,6 +3,7 @@ package basicgraph;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,7 +123,16 @@ public abstract class Graph {
 	 */
 	public List<Integer> degreeSequence() {
 		// XXX: Implement in part 1 of week 1
-		return null;
+		List<Integer> mylist=new LinkedList<Integer>();
+		for(int i=0;i<getNumVertices();i++)
+		{
+			int neighbour= getNeighbors(i).size();
+			neighbour+=getInNeighbors(i).size();
+			mylist.add(neighbour);
+		}
+		 Collections.sort(mylist);
+		 Collections.reverse(mylist);
+		 return mylist;
 	}
 	
 	/**
@@ -228,7 +238,8 @@ public abstract class Graph {
 
 	
 	public static void main (String[] args) {
-		GraphLoader.createIntersectionsFile("data/maps/myucsd.map", "data/intersections/myucsd.intersections");
+		GraphLoader.createIntersectionsFile("data/maps/ucsd.map", "data/intersections/ucsd.intersections");
+		GraphLoader.createIntersectionsFile("data/maps/home.map", "data/intersections/home.intersections");
 		
 
 		// For testing of Part 1 functionality
@@ -261,6 +272,11 @@ public abstract class Graph {
 		// Test your distance2 code here.
 		System.out.println("Testing distance-two methods on sample graphs...");
 		System.out.println("Goal: implement method using two approaches.");
+		System.out.println(graphFromFile.getDistance2(7));
+		GraphAdjMatrix graphFromFile1 = new GraphAdjMatrix();
+		GraphLoader.loadRoadMap("data/testdata/simpletest.map", graphFromFile1);
+		System.out.println(graphFromFile1.getDistance2(7));
+		
 
 
 		
