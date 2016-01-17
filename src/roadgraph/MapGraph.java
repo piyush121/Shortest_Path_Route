@@ -8,9 +8,14 @@
 package roadgraph;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.Queue;
 
 import geography.GeographicPoint;
 import util.GraphLoader;
@@ -25,13 +30,14 @@ import util.GraphLoader;
 public class MapGraph {
 	//TODO: Add your member variables here in WEEK 2
 	
-	
+	private Map<GeographicPoint,ArrayList<Edge>> adjListsMap;
 	/** 
 	 * Create a new empty MapGraph 
 	 */
 	public MapGraph()
 	{
 		// TODO: Implement in this constructor in WEEK 2
+		this.adjListsMap=new HashMap<GeographicPoint, ArrayList<Edge>>();
 	}
 	
 	/**
@@ -41,7 +47,7 @@ public class MapGraph {
 	public int getNumVertices()
 	{
 		//TODO: Implement this method in WEEK 2
-		return 0;
+		return this.adjListsMap.size();
 	}
 	
 	/**
@@ -51,7 +57,7 @@ public class MapGraph {
 	public Set<GeographicPoint> getVertices()
 	{
 		//TODO: Implement this method in WEEK 2
-		return null;
+		return adjListsMap.keySet();
 	}
 	
 	/**
@@ -61,7 +67,11 @@ public class MapGraph {
 	public int getNumEdges()
 	{
 		//TODO: Implement this method in WEEK 2
-		return 0;
+		int sum=0;
+		for(GeographicPoint key: this.adjListsMap.keySet())
+			sum+=adjListsMap.get(key).size();
+				
+		return sum;
 	}
 
 	
@@ -76,7 +86,10 @@ public class MapGraph {
 	public boolean addVertex(GeographicPoint location)
 	{
 		// TODO: Implement this method in WEEK 2
-		return false;
+		if(adjListsMap.containsKey(location))
+			return false;
+		adjListsMap.put(location, new ArrayList<>());
+		return true;
 	}
 	
 	/**
@@ -95,6 +108,15 @@ public class MapGraph {
 			String roadType, double length) throws IllegalArgumentException {
 
 		//TODO: Implement this method in WEEK 2
+		if(!adjListsMap.containsKey(from) || !adjListsMap.containsKey(to) || roadName==null
+					|| roadType == null || length<0)
+			throw new IllegalArgumentException();
+		Edge myedge=new Edge();
+		myedge.setLength(length);
+		myedge.setRoadName(roadName);
+		myedge.setRoadType(roadType);
+		myedge.setLocation(to);
+		adjListsMap.get(from).add(myedge);		
 		
 	}
 	
@@ -127,8 +149,27 @@ public class MapGraph {
 		
 		// Hook for visualization.  See writeup.
 		//nodeSearched.accept(next.getLocation());
+		Queue<Edge> que=new LinkedList<>();
+		List<GeographicPoint> list=new LinkedList<>();
+		que.addAll(adjListsMap.get(start));
+		list.add(start);
+		while(!que.isEmpty())
+		{
+			if(que.peek().getLocation()==goal)
+			{
+				list.add(que.peek().getLocation());
+				nodeSearched.accept(que.remove().getLocation());
+			}
+			else
+				{	
+					list.add(que.peek().getLocation());
+					nodeSearched.accept(que.peek().getLocation());
+					que.addAll(adjListsMap.get(que.remove()));
+				}
+		}
+		
 
-		return null;
+		return list;
 	}
 	
 
