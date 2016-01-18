@@ -34,8 +34,8 @@ public class MapGraph {
 	//TODO: Add your member variables here in WEEK 2
 	
 	private Map<GeographicPoint,ArrayList<GeographicPoint>> adjListsMap;
-	private Map<GeographicPoint,GeographicPoint> parentMap=new HashMap<>();
-	private HashSet<GeographicPoint> visited=new HashSet<>();
+	private Map<GeographicPoint,GeographicPoint> parentMap;
+	private HashSet<GeographicPoint> visited;
 	/** 
 	 * Create a new empty MapGraph 
 	 */
@@ -43,6 +43,8 @@ public class MapGraph {
 	{
 		// TODO: Implement in this constructor in WEEK 2
 		this.adjListsMap=new HashMap<GeographicPoint, ArrayList<GeographicPoint>>();
+		parentMap=new HashMap<>();
+		visited=new HashSet<>();
 	}
 	
 	/**
