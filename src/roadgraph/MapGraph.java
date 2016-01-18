@@ -9,7 +9,10 @@ package roadgraph;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +33,16 @@ import util.GraphLoader;
 public class MapGraph {
 	//TODO: Add your member variables here in WEEK 2
 	
-	private Map<GeographicPoint,ArrayList<Edge>> adjListsMap;
+	private Map<GeographicPoint,ArrayList<GeographicPoint>> adjListsMap;
+	private Map<GeographicPoint,GeographicPoint> parentMap=new HashMap<>();
+	private HashSet<GeographicPoint> visited=new HashSet<>();
 	/** 
 	 * Create a new empty MapGraph 
 	 */
 	public MapGraph()
 	{
 		// TODO: Implement in this constructor in WEEK 2
-		this.adjListsMap=new HashMap<GeographicPoint, ArrayList<Edge>>();
+		this.adjListsMap=new HashMap<GeographicPoint, ArrayList<GeographicPoint>>();
 	}
 	
 	/**
@@ -88,7 +93,7 @@ public class MapGraph {
 		// TODO: Implement this method in WEEK 2
 		if(adjListsMap.containsKey(location))
 			return false;
-		adjListsMap.put(location, new ArrayList<>());
+		adjListsMap.put(location, new ArrayList<GeographicPoint>());
 		return true;
 	}
 	
@@ -115,8 +120,9 @@ public class MapGraph {
 		myedge.setLength(length);
 		myedge.setRoadName(roadName);
 		myedge.setRoadType(roadType);
-		myedge.setLocation(to);
-		adjListsMap.get(from).add(myedge);		
+		myedge.setFrom(from);
+		myedge.setTo(to);
+		adjListsMap.get(from).add(to);		
 		
 	}
 	
@@ -149,27 +155,43 @@ public class MapGraph {
 		
 		// Hook for visualization.  See writeup.
 		//nodeSearched.accept(next.getLocation());
-		Queue<Edge> que=new LinkedList<>();
-		List<GeographicPoint> list=new LinkedList<>();
-		que.addAll(adjListsMap.get(start));
-		list.add(start);
+		Queue<GeographicPoint> que=new LinkedList<>();
+		List<GeographicPoint> list=new LinkedList<>();			//List to be returned.
+		que.add(start);
+		boolean found=false;
 		while(!que.isEmpty())
 		{
-			if(que.peek().getLocation()==goal)
+			if(que.peek().equals(goal))
 			{
-				list.add(que.peek().getLocation());
-				nodeSearched.accept(que.remove().getLocation());
+				nodeSearched.accept(que.remove());
+				found=true;
+				break;
 			}
-			else
+			else 
 				{	
-					list.add(que.peek().getLocation());
-					nodeSearched.accept(que.peek().getLocation());
-					que.addAll(adjListsMap.get(que.remove()));
+					for(GeographicPoint point: adjListsMap.get(que.peek()))
+						if(!visited.contains(point))
+						{	visited.add(que.peek());
+							parentMap.put(point,que.peek());
+							que.add(point);
+						}
+		
+					nodeSearched.accept(que.remove());
 				}
 		}
+		if(found==false)
+			return null;
 		
-
+		GeographicPoint mypoint=goal;		//TO traverse the parent path.
+		while(mypoint!=start)
+		{
+			list.add(mypoint);				//This will add the parent path in reverse order
+			mypoint=parentMap.get(mypoint);
+		}
+		list.add(start);
+		Collections.reverse(list);			//To reverse the list t o get the actual path
 		return list;
+			
 	}
 	
 

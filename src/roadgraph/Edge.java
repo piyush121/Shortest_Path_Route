@@ -2,11 +2,12 @@ package roadgraph;
 
 import geography.GeographicPoint;
 
-public class Edge {
-	private String roadName;
-	private String roadType;
+public class Edge {						//This class will store the information regarding the edge.
+	private String roadName;			//Although its not useful in BFS but will be used in Dijkstra
+	private String roadType;			// and A* probably to figure out the length.
 	private double length;
-	private GeographicPoint location;
+	private GeographicPoint from;
+	private GeographicPoint to;
 	
 	public double getLength() {
 		return length;
@@ -26,11 +27,18 @@ public class Edge {
 	public void setRoadName(String roadName) {
 		this.roadName = roadName;
 	}
-	public GeographicPoint getLocation() {
-		return location;
+
+	public GeographicPoint getFrom() {
+		return from;
 	}
-	public void setLocation(GeographicPoint location) {
-		this.location = location;
+	public void setFrom(GeographicPoint from) {
+		this.from = from;
+	}
+	public GeographicPoint getTo() {
+		return to;
+	}
+	public void setTo(GeographicPoint to) {
+		this.to = to;
 	}
 	
 
