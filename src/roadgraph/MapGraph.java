@@ -35,7 +35,8 @@ public class MapGraph {
 	
 	private Map<GeographicPoint,ArrayList<GeographicPoint>> adjListsMap;
 	private Map<GeographicPoint,GeographicPoint> parentMap;
-	private HashSet<GeographicPoint> visited;
+	private Map<GeographicPoint,Integer> distFromStart=new HashMap<>();
+
 	/** 
 	 * Create a new empty MapGraph 
 	 */
@@ -44,7 +45,7 @@ public class MapGraph {
 		// TODO: Implement in this constructor in WEEK 2
 		this.adjListsMap=new HashMap<GeographicPoint, ArrayList<GeographicPoint>>();
 		parentMap=new HashMap<>();
-		visited=new HashSet<>();
+		
 	}
 	
 	/**
@@ -159,6 +160,7 @@ public class MapGraph {
 		//nodeSearched.accept(next.getLocation());
 		Queue<GeographicPoint> que=new LinkedList<>();
 		List<GeographicPoint> list=new LinkedList<>();			//List to be returned.
+		HashSet<GeographicPoint> visited=new HashSet<>();
 		que.add(start);
 		boolean found=false;
 		while(!que.isEmpty())
@@ -208,6 +210,8 @@ public class MapGraph {
 		// Dummy variable for calling the search algorithms
 		// You do not need to change this method.
         Consumer<GeographicPoint> temp = (x) -> {};
+        
+        
         return dijkstra(start, goal, temp);
 	}
 	
