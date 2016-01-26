@@ -35,7 +35,7 @@ public class MapGraph {
 	
 	private Map<GeographicPoint,ArrayList<GeographicPoint>> adjListsMap;
 	private Map<GeographicPoint,GeographicPoint> parentMap;
-	private Map<GeographicPoint,Integer> distFromStart=new HashMap<>();
+	static Map<GeographicPoint,Integer> distFromStart=new HashMap<>();
 
 	/** 
 	 * Create a new empty MapGraph 
@@ -97,6 +97,7 @@ public class MapGraph {
 		if(adjListsMap.containsKey(location))
 			return false;
 		adjListsMap.put(location, new ArrayList<GeographicPoint>());
+		distFromStart.put(location, Integer.MAX_VALUE);
 		return true;
 	}
 	
@@ -210,6 +211,8 @@ public class MapGraph {
 		// Dummy variable for calling the search algorithms
 		// You do not need to change this method.
         Consumer<GeographicPoint> temp = (x) -> {};
+        distFromStart.put(start, 0);		//set start location to 0.
+        
         
         
         return dijkstra(start, goal, temp);
