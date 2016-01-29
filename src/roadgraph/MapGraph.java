@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 
 import geography.GeographicPoint;
 import geography.RoadSegment;
+import javafx.scene.layout.Priority;
 import util.GraphLoader;
 
 /**
@@ -302,6 +303,8 @@ public class MapGraph {
 		// Dummy variable for calling the search algorithms
 		// You do not need to change this method.
         Consumer<GeographicPoint> temp = (x) -> {};
+        
+        
         return dijkstra(start, goal, temp);
 	}
 	
@@ -320,6 +323,12 @@ public class MapGraph {
 
 		// Hook for visualization.  See writeup.
 		//nodeSearched.accept(next.getLocation());
+		for(MapNode nodes : pointNodeMap.values())
+			nodes.setActualDistance(Integer.MAX_VALUE);
+		MapNode begin=pointNodeMap.get(start);
+		PriorityQueue<MapNode> pque=new PriorityQueue<>();
+		pque.add(begin);
+		
 		
 		return null;
 	}
