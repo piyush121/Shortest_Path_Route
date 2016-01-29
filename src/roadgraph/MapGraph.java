@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 
 import geography.GeographicPoint;
 import geography.RoadSegment;
-import javafx.scene.layout.Priority;
 import util.GraphLoader;
 
 /**
@@ -320,7 +319,7 @@ public class MapGraph {
 										  GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
 		// TODO: Implement this method in WEEK 3
-
+		int count=0;
 		// Hook for visualization.  See writeup.
 		//nodeSearched.accept(next.getLocation());
 		for(MapNode nodes : pointNodeMap.values())
@@ -337,6 +336,7 @@ public class MapGraph {
 		while(!pque.isEmpty())
 		{
 			node = pque.poll();
+			count++;
 			nodeSearched.accept( node.getLocation() );
 			if(node.equals(end))
 				break;
@@ -357,7 +357,7 @@ public class MapGraph {
 			return null;
 		List<GeographicPoint> path =
 				reconstructPath(parentMap, begin, end);
-		
+		System.out.println(path);
 		return path;
 	}
 
@@ -386,11 +386,48 @@ public class MapGraph {
 											 GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
 		// TODO: Implement this method in WEEK 3
-		
+		int count=0;
 		// Hook for visualization.  See writeup.
 		//nodeSearched.accept(next.getLocation());
+		for(MapNode nodes : pointNodeMap.values())
+			nodes.setDistance(Integer.MAX_VALUE);
+		MapNode begin=pointNodeMap.get(start);
+		MapNode end=pointNodeMap.get(goal);
+		begin.setDistance(0);
+		PriorityQueue<MapNode> pque=new PriorityQueue<>();
+		HashSet<MapEdge> visited = new HashSet<MapEdge>();
+		HashMap<MapNode,MapNode> parentMap=new HashMap<>();
+		MapNode node=null;
 		
-		return null;
+		pque.add(begin);
+		while(!pque.isEmpty())
+		{
+			node = pque.poll();
+			count++;
+			nodeSearched.accept( node.getLocation() );
+			if(node.equals(end))
+				break;
+			for(MapEdge edge : node.getEdges())
+			{	
+				if(edge.getEndNode().getDistance()>node.getDistance()+edge.getLength())
+				{	
+					MapNode endnode=edge.getEndNode();
+					visited.add(edge);
+					endnode.setActualDistance(end.getLocation().distance(endnode.getLocation()));
+					endnode.setDistance(node.getDistance()+edge.getLength()+endnode.getActualDistance());
+					parentMap.put(edge.getEndNode(), node);
+					pque.offer(edge.getEndNode());
+					
+				}
+			}
+		}
+		if(!node.equals(end))
+			return null;
+		List<GeographicPoint> path =
+				reconstructPath(parentMap, begin, end);
+		System.out.println(count);
+		return path;
+		
 	}
 
 
@@ -405,7 +442,7 @@ public class MapGraph {
 		System.out.println("DONE.");
 		*/ 
 
-		// more advanced testing
+		/*// more advanced testing
 		System.out.print("Making a new map...");
 		MapGraph theMap = new MapGraph();
 		System.out.print("DONE. \nLoading the map...");
@@ -420,9 +457,9 @@ public class MapGraph {
 												 new GeographicPoint(8.0,-1.0));
 		
 		System.out.println(route);
-		
+		*/
 			
-		/* // Use this code in Week 3 End of Week Quiz
+		 // Use this code in Week 3 End of Week Quiz
 		MapGraph theMap = new MapGraph();
 		System.out.print("DONE. \nLoading the map...");
 		GraphLoader.loadRoadMap("data/maps/utc.map", theMap);
@@ -433,7 +470,7 @@ public class MapGraph {
 		
 		List<GeographicPoint> route = theMap.dijkstra(start,end);
 		List<GeographicPoint> route2 = theMap.aStarSearch(start,end);
-		*/
+		
 				
 	}
 
