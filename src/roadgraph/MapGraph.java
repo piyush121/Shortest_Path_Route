@@ -326,16 +326,20 @@ public class MapGraph {
 		for(MapNode nodes : pointNodeMap.values())
 			nodes.setDistance(Integer.MAX_VALUE);
 		MapNode begin=pointNodeMap.get(start);
+		MapNode end=pointNodeMap.get(goal);
+		begin.setDistance(0);
 		PriorityQueue<MapNode> pque=new PriorityQueue<>();
 		HashSet<MapEdge> visited = new HashSet<MapEdge>();
 		HashMap<MapNode,MapNode> parentMap=new HashMap<>();
-
+		MapNode node=null;
 		
 		pque.add(begin);
 		while(!pque.isEmpty())
 		{
-			MapNode node = pque.remove();
-			Set<MapNode> neighbours= node.getNeighbors();
+			node = pque.poll();
+			nodeSearched.accept( node.getLocation() );
+			if(node.equals(end))
+				break;
 			for(MapEdge edge : node.getEdges())
 			{	
 				if(edge.getEndNode().getDistance()>node.getDistance()+edge.getLength())
@@ -344,13 +348,17 @@ public class MapGraph {
 					visited.add(edge);
 					edge.getEndNode().setDistance(node.getDistance()+edge.getLength());
 					parentMap.put(edge.getEndNode(), node);
+					pque.offer(edge.getEndNode());
 					
 				}
 			}
 		}
+		if(!node.equals(end))
+			return null;
+		List<GeographicPoint> path =
+				reconstructPath(parentMap, begin, end);
 		
-		
-		return null;
+		return path;
 	}
 
 	/** Find the path from start to goal using A-Star search
