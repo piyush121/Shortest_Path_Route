@@ -324,10 +324,30 @@ public class MapGraph {
 		// Hook for visualization.  See writeup.
 		//nodeSearched.accept(next.getLocation());
 		for(MapNode nodes : pointNodeMap.values())
-			nodes.setActualDistance(Integer.MAX_VALUE);
+			nodes.setDistance(Integer.MAX_VALUE);
 		MapNode begin=pointNodeMap.get(start);
 		PriorityQueue<MapNode> pque=new PriorityQueue<>();
+		HashSet<MapEdge> visited = new HashSet<MapEdge>();
+		HashMap<MapNode,MapNode> parentMap=new HashMap<>();
+
+		
 		pque.add(begin);
+		while(!pque.isEmpty())
+		{
+			MapNode node = pque.remove();
+			Set<MapNode> neighbours= node.getNeighbors();
+			for(MapEdge edge : node.getEdges())
+			{	
+				if(edge.getEndNode().getDistance()>node.getDistance()+edge.getLength())
+				{	
+					
+					visited.add(edge);
+					edge.getEndNode().setDistance(node.getDistance()+edge.getLength());
+					parentMap.put(edge.getEndNode(), node);
+					
+				}
+			}
+		}
 		
 		
 		return null;
