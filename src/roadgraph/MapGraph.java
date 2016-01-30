@@ -190,7 +190,7 @@ public class MapGraph {
 
 
 	/** Returns the nodes in terms of their geographic locations */
-	public Collection<GeographicPoint> getVertices() {
+	public Set<GeographicPoint> getVertices() {
 		return pointNodeMap.keySet();
 	}
 
@@ -341,7 +341,7 @@ public class MapGraph {
 			if(node.equals(end))
 				break;
 			for(MapEdge edge : node.getEdges())
-			{	
+			{	if(!visited.contains(edge.getEndNode()))
 				if(edge.getEndNode().getDistance()>node.getDistance()+edge.getLength())
 				{	
 					
@@ -357,7 +357,7 @@ public class MapGraph {
 			return null;
 		List<GeographicPoint> path =
 				reconstructPath(parentMap, begin, end);
-		System.out.println(path);
+		System.out.println("Dijkstra search nodes count: "+count);
 		return path;
 	}
 
@@ -408,13 +408,14 @@ public class MapGraph {
 			if(node.equals(end))
 				break;
 			for(MapEdge edge : node.getEdges())
-			{	
+			{	if(!visited.contains(edge.getEndNode()))
 				if(edge.getEndNode().getDistance()>node.getDistance()+edge.getLength())
 				{	
 					MapNode endnode=edge.getEndNode();
 					visited.add(edge);
-					endnode.setActualDistance(end.getLocation().distance(endnode.getLocation()));
-					endnode.setDistance(node.getDistance()+edge.getLength()+endnode.getActualDistance());
+					endnode.setActualDistance(end.getLocation().distance(endnode.getLocation()));//Distance from end.
+					Double heuristicCost =node.getDistance()+edge.getLength()+endnode.getActualDistance(); // Heauristic distance i.e distance from start + straight line distance from end.
+					endnode.setDistance(heuristicCost);
 					parentMap.put(edge.getEndNode(), node);
 					pque.offer(edge.getEndNode());
 					
@@ -425,7 +426,7 @@ public class MapGraph {
 			return null;
 		List<GeographicPoint> path =
 				reconstructPath(parentMap, begin, end);
-		System.out.println(count);
+		System.out.println("A* search nodes count: "+count);
 		return path;
 		
 	}
@@ -465,8 +466,8 @@ public class MapGraph {
 		GraphLoader.loadRoadMap("data/maps/utc.map", theMap);
 		System.out.println("DONE.");
 
-		GeographicPoint start = new GeographicPoint(32.868629, -117.215393);
-		GeographicPoint end = new GeographicPoint(32.868629, -117.215393);
+		GeographicPoint start = new GeographicPoint(32.8648772, -117.2254046);
+		GeographicPoint end = new GeographicPoint(32.8660691, -117.217393);
 		
 		List<GeographicPoint> route = theMap.dijkstra(start,end);
 		List<GeographicPoint> route2 = theMap.aStarSearch(start,end);
